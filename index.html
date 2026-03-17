@@ -457,12 +457,21 @@
       db.ref('updates').push({ text, timestamp: Date.now() }); db.ref('overall/updatedAt').set(Date.now());
       document.getElementById('aUpdateText').value = '';
     }
+    function deleteUpdate(key) {
+      if (confirm('Delete this update?')) db.ref('updates/' + key).remove();
+    }
     db.ref('updates').on('value', snap => {
       const data = snap.val();
       const el = document.getElementById('updatesList');
       if (!data) { el.innerHTML = '<div class="no-items">No updates posted yet.</div>'; return; }
-      el.innerHTML = Object.values(data).sort((a,b)=>b.timestamp-a.timestamp).map(u => `
-        <div class="update-entry"><div class="update-time">${fmt(u.timestamp)}</div><div class="update-text">${esc(u.text)}</div></div>`).join('');
+      el.innerHTML = Object.entries(data).sort((a,b)=>b[1].timestamp-a[1].timestamp).map(([key, u]) => `
+        <div class="update-entry" style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="update-time">${fmt(u.timestamp)}</div>
+            <div class="update-text">${esc(u.text)}</div>
+          </div>
+          ${isAdmin ? `<button class="btn-x" onclick="deleteUpdate('${key}')" title="Delete update" style="flex-shrink:0;margin-left:8px">&times;</button>` : ''}
+        </div>`).join('');
     });
 
     // ── FEEDBACK ───────────────────────────────────────────────────────────────
