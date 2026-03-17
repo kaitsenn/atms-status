@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATMS Status</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f6f8;
+      color: #1a1a2e;
+      line-height: 1.5;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 28px 24px 20px;
+      text-align: center;
+    }
+    header h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+    header .last-updated {
+      font-size: 13px;
+      color: #a0a0b8;
+    }
+
+    /* ---------- Overall Status Banner ---------- */
+    .overall-banner {
+      margin: 24px auto 0;
+      max-width: 720px;
+      padding: 18px 24px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      text-align: center;
+    }
+    .overall-banner .dot {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .status-operational { background: #e6f9ee; color: #15803d; }
+    .status-operational .dot { background: #22c55e; }
+    .status-issues { background: #fef3c7; color: #92400e; }
+    .status-issues .dot { background: #f59e0b; }
+    .status-major { background: #fee2e2; color: #991b1b; }
+    .status-major .dot { background: #ef4444; }
+
+    /* ---------- Main Content ---------- */
+    .container {
+      max-width: 720px;
+      margin: 24px auto;
+      padding: 0 16px 60px;
+    }
+
+    .section { margin-bottom: 32px; }
+    .section h2 {
+      font-size: 15px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+
+    /* Issues list */
+    .issue-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .issue-card .issue-name { font-weight: 500; font-size: 15px; }
+    .issue-card .issue-detail { font-size: 13px; color: #6b7280; margin-top: 2px; }
+    .issue-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .badge-investigating { background: #fee2e2; color: #991b1b; }
+    .badge-in-progress { background: #fef3c7; color: #92400e; }
+    .badge-monitoring { background: #dbeafe; color: #1e40af; }
+    .badge-resolved { background: #e6f9ee; color: #15803d; }
+
+    .no-issues {
+      background: #fff;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      color: #6b7280;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    /* Updates log */
+    .update-entry {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .update-entry .update-time {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    .update-entry .update-text { font-size: 14px; }
+
+    /* Feedback section */
+    .feedback-box {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      font-size: 14px;
+      color: #374151;
+    }
+
+    /* ---------- Admin Panel ---------- */
+    .admin-bar {
+      background: #eef2ff;
+      border-bottom: 2px solid #6366f1;
+      padding: 10px 24px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4338ca;
+      display: none;
+    }
+    .admin-bar a { color: #4338ca; margin-left: 12px; cursor: pointer; text-decoration: underline; }
+
+    .admin-panel {
+      display: none;
+      max-width: 720px;
+      margin: 0 auto 32px;
+      padding: 0 16px;
+    }
+    .admin-panel.visible { display: block; }
+
+    .admin-section {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .admin-section h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #1a1a2e;
+    }
+
+    label.field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 4px;
+      margin-top: 10px;
+    }
+    label.field-label:first-of-type { margin-top: 0; }
+
+    input[type="text"], input[type="password"], textarea, select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    textarea { resize: vertical; min-height: 60px; }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      margin-right: 6px;
+    }
+    .btn-primary { background: #4338ca; color: #fff; }
+    .btn-primary:hover { background: #3730a3; }
+    .btn-danger { background: #fee2e2; color: #991b1b; }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-secondary { background: #f3f4f6; color: #374151; }
+    .btn-secondary:hover { background: #e5e7eb; }
+
+    .issue-edit-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 8px;
+      align-items: end;
+      margin-bottom: 8px;
+      padding: 10px;
+      background: #f9fafb;
+      border-radius: 6px;
+    }
+    .issue-edit-row .remove-btn {
+      background: none;
+      border: none;
+      color: #991b1b;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 6px;
+    }
+
+    /* Login overlay */
+    .login-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-overlay.visible { display: flex; }
+    .login-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      width: 340px;
+      text-align: center;
+    }
+    .login-box h2 { font-size: 18px; margin-bottom: 16px; }
+    .login-box .error { color: #991b1b; font-size: 13px; margin-top: 8px; display: none; }
+
+    /* Admin toggle link in footer */
+    .admin-link {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+    }
+    .admin-link a {
+      color: #9ca3af;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .admin-link a:hover { color: #6b7280; }
+  </style>
+</head>
+<body>
+
+  <!-- Admin bar (shown when logged in) -->
+  <div class="admin-bar" id="adminBar">
+    Admin Mode — editing changes are live immediately
+    <a onclick="toggleAdminPanel()">Toggle Editor</a>
+    <a onclick="logout()">Log out</a>
+  </div>
+
+  <!-- Login overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+      <h2>Admin Login</h2>
+      <label class="field-label">Password</label>
+      <input type="password" id="loginPassword" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn btn-primary" style="width:100%;margin-top:12px;" onclick="doLogin()">Log in</button>
+      <div class="error" id="loginError">Incorrect password. Try again.</div>
+      <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="cancelLogin()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <h1>ATMS Status</h1>
+    <div class="last-updated" id="lastUpdated">Last updated: —</div>
+  </header>
+
+  <!-- Overall status banner -->
+  <div class="overall-banner status-operational" id="overallBanner">
+    <span class="dot"></span>
+    <span id="overallText">All systems operational</span>
+  </div>
+
+  <div class="container">
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+
+      <div class="admin-section">
+        <h3>Overall Status</h3>
+        <label class="field-label">Status level</label>
+        <select id="adminOverallStatus" onchange="saveOverallStatus()">
+          <option value="operational">All Systems Operational</option>
+          <option value="issues">Some Issues</option>
+          <option value="major">Major Issues</option>
+        </select>
+        <label class="field-label">Custom message (optional — overrides default text)</label>
+        <input type="text" id="adminOverallMessage" placeholder="e.g. We're experiencing login delays" onchange="saveOverallStatus()">
+      </div>
+
+      <div class="admin-section">
+        <h3>Known Issues</h3>
+        <div id="adminIssuesList"></div>
+        <button class="btn btn-secondary" onclick="addIssueRow()">+ Add issue</button>
+        <button class="btn btn-primary" onclick="saveIssues()">Save issues</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>Post an Update</h3>
+        <label class="field-label">Update text</label>
+        <textarea id="adminUpdateText" placeholder="e.g. Login times have improved, now averaging under 30 seconds."></textarea>
+        <button class="btn btn-primary" onclick="postUpdate()">Post update</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>Feedback Instructions</h3>
+        <label class="field-label">Text shown in the feedback section</label>
+        <textarea id="adminFeedback" placeholder="e.g. Please reach out to Kaitlin via Teams or email..." onchange="saveFeedback()"></textarea>
+        <button class="btn btn-primary" onclick="saveFeedback()">Save</button>
+      </div>
+
+    </div>
+
+    <!-- Known Issues (public) -->
+    <div class="section">
+      <h2>Known Issues</h2>
+      <div id="issuesList">
+        <div class="no-issues">No known issues at this time.</div>
+      </div>
+    </div>
+
+    <!-- Recent Updates (public) -->
+    <div class="section">
+      <h2>Recent Updates</h2>
+      <div id="updatesList">
+        <div class="no-issues">No updates yet.</div>
+      </div>
+    </div>
+
+    <!-- Feedback (public) -->
+    <div class="section">
+      <h2>Share Feedback</h2>
+      <div class="feedback-box" id="feedbackBox">
+        Have something to report or feedback to share? Please reach out to Kaitlin via Teams or email.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Small admin link at bottom -->
+  <div class="admin-link">
+    <a onclick="showLogin()">Admin</a>
+  </div>
+
+  <!-- ============================================
+       FIREBASE SETUP — REPLACE THE CONFIG BELOW
+       ============================================
+       1. Go to https://console.firebase.google.com
+       2. Create a new project (name it anything, e.g. "atms-status")
+       3. In Project Settings, scroll to "Your apps" and click the web icon (</>)
+       4. Register the app (no hosting needed), copy the config object
+       5. Paste the values below replacing the YOUR_... placeholders
+       6. Go to "Realtime Database" in the left menu, create a database
+       7. Start in TEST mode (fine for 4 weeks)
+       ============================================ -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQs80Xl_OW5prw9r26jJ-OJrHyWIBw1IQ",
+      authDomain: "atms-status.firebaseapp.com",
+      databaseURL: "https://atms-status-default-rtdb.firebaseio.com",
+      projectId: "atms-status",
+      storageBucket: "atms-status.firebasestorage.app",
+      messagingSenderId: "328973597557",
+      appId: "1:328973597557:web:44e59890be19d3798a713c",
+      measurementId: "G-B50MFDK19R"
+    };
+
+    // ——— SET YOUR ADMIN PASSWORD HERE ———
+    const ADMIN_PASSWORD = "Beacon*295!";
+
+    // ——————————————————————————————
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let isAdmin = false;
+
+    // --- Auth ---
+    function showLogin() {
+      document.getElementById('loginOverlay').classList.add('visible');
+      document.getElementById('loginPassword').focus();
+    }
+    function cancelLogin() {
+      document.getElementById('loginOverlay').classList.remove('visible');
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginError').style.display = 'none';
+    }
+    function doLogin() {
+      const pw = document.getElementById('loginPassword').value;
+      if (pw === ADMIN_PASSWORD) {
+        isAdmin = true;
+        cancelLogin();
+        document.getElementById('adminBar').style.display = 'block';
+        document.getElementById('adminPanel').classList.add('visible');
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+    function logout() {
+      isAdmin = false;
+      document.getElementById('adminBar').style.display = 'none';
+      document.getElementById('adminPanel').classList.remove('visible');
+    }
+    function toggleAdminPanel() {
+      document.getElementById('adminPanel').classList.toggle('visible');
+    }
+
+    // --- Formatting helpers ---
+    function formatDate(ts) {
+      const d = new Date(ts);
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const month = months[d.getMonth()];
+      const day = d.getDate();
+      let hours = d.getHours();
+      const mins = String(d.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      return `${month} ${day}, ${hours}:${mins} ${ampm}`;
+    }
+
+    // --- Overall status ---
+    function saveOverallStatus() {
+      const level = document.getElementById('adminOverallStatus').value;
+      const msg = document.getElementById('adminOverallMessage').value.trim();
+      db.ref('overall').set({ level, message: msg, updatedAt: Date.now() });
+    }
+
+    db.ref('overall').on('value', snap => {
+      const data = snap.val() || { level: 'operational', message: '', updatedAt: null };
+      const banner = document.getElementById('overallBanner');
+      const text = document.getElementById('overallText');
+      const updated = document.getElementById('lastUpdated');
+
+      banner.className = 'overall-banner';
+      const defaults = {
+        operational: 'All systems operational',
+        issues: 'We\'re experiencing some issues — see details below',
+        major: 'We\'re experiencing major issues — see details below'
+      };
+      banner.classList.add('status-' + (data.level === 'issues' ? 'issues' : data.level === 'major' ? 'major' : 'operational'));
+      text.textContent = data.message || defaults[data.level] || defaults.operational;
+
+      if (data.updatedAt) {
+        updated.textContent = 'Last updated: ' + formatDate(data.updatedAt);
+      }
+
+      // Sync admin fields
+      if (isAdmin) {
+        document.getElementById('adminOverallStatus').value = data.level || 'operational';
+        document.getElementById('adminOverallMessage').value = data.message || '';
+      }
+    });
+
+    // --- Issues ---
+    function addIssueRow(name, detail, status) {
+      const container = document.getElementById('adminIssuesList');
+      const row = document.createElement('div');
+      row.className = 'issue-edit-row';
+      row.innerHTML = `
+        <div>
+          <label class="field-label">Issue</label>
+          <input type="text" class="issue-name" placeholder="e.g. Slow login times" value="${name || ''}">
+          <label class="field-label">Detail (optional)</label>
+          <input type="text" class="issue-detail" placeholder="e.g. Averaging 2-3 min" value="${detail || ''}">
+        </div>
+        <div>
+          <label class="field-label">Status</label>
+          <select class="issue-status">
+            <option value="investigating" ${status==='investigating'?'selected':''}>Investigating</option>
+            <option value="in-progress" ${status==='in-progress'?'selected':''}>In Progress</option>
+            <option value="monitoring" ${status==='monitoring'?'selected':''}>Monitoring</option>
+            <option value="resolved" ${status==='resolved'?'selected':''}>Resolved</option>
+          </select>
+        </div>
+        <button class="remove-btn" onclick="this.parentElement.remove()" title="Remove">&times;</button>
+      `;
+      container.appendChild(row);
+    }
+
+    function saveIssues() {
+      const rows = document.querySelectorAll('#adminIssuesList .issue-edit-row');
+      const issues = [];
+      rows.forEach(row => {
+        const name = row.querySelector('.issue-name').value.trim();
+        if (!name) return;
+        issues.push({
+          name,
+          detail: row.querySelector('.issue-detail').value.trim(),
+          status: row.querySelector('.issue-status').value
+        });
+      });
+      db.ref('issues').set(issues);
+      db.ref('overall/updatedAt').set(Date.now());
+    }
+
+    db.ref('issues').on('value', snap => {
+      const issues = snap.val() || [];
+      const listEl = document.getElementById('issuesList');
+
+      if (!issues.length) {
+        listEl.innerHTML = '<div class="no-issues">No known issues at this time.</div>';
+      } else {
+        listEl.innerHTML = issues.map(issue => {
+          const badgeClass = 'badge-' + issue.status;
+          const badgeLabels = {
+            'investigating': 'Investigating',
+            'in-progress': 'In Progress',
+            'monitoring': 'Monitoring',
+            'resolved': 'Resolved'
+          };
+          return `
+            <div class="issue-card">
+              <div>
+                <div class="issue-name">${escapeHtml(issue.name)}</div>
+                ${issue.detail ? `<div class="issue-detail">${escapeHtml(issue.detail)}</div>` : ''}
+              </div>
+              <span class="issue-badge ${badgeClass}">${badgeLabels[issue.status] || issue.status}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Sync admin fields
+      if (isAdmin) {
+        const container = document.getElementById('adminIssuesList');
+        container.innerHTML = '';
+        issues.forEach(i => addIssueRow(i.name, i.detail, i.status));
+      }
+    });
+
+    // --- Updates ---
+    function postUpdate() {
+      const text = document.getElementById('adminUpdateText').value.trim();
+      if (!text) return;
+      const newRef = db.ref('updates').push();
+      newRef.set({ text, timestamp: Date.now() });
+      db.ref('overall/updatedAt').set(Date.now());
+      document.getElementById('adminUpdateText').value = '';
+    }
+
+    db.ref('updates').on('value', snap => {
+      const data = snap.val();
+      const listEl = document.getElementById('updatesList');
+
+      if (!data) {
+        listEl.innerHTML = '<div class="no-issues">No updates yet.</div>';
+        return;
+      }
+
+      const updates = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
+      listEl.innerHTML = updates.map(u => `
+        <div class="update-entry">
+          <div class="update-time">${formatDate(u.timestamp)}</div>
+          <div class="update-text">${escapeHtml(u.text)}</div>
+        </div>
+      `).join('');
+    });
+
+    // --- Feedback ---
+    function saveFeedback() {
+      const text = document.getElementById('adminFeedback').value.trim();
+      db.ref('feedback').set({ text });
+    }
+
+    db.ref('feedback').on('value', snap => {
+      const data = snap.val();
+      const box = document.getElementById('feedbackBox');
+      const text = data?.text || 'Have something to report or feedback to share? Please reach out to Kaitlin via Teams or email.';
+      box.textContent = text;
+      if (isAdmin) {
+        document.getElementById('adminFeedback').value = data?.text || '';
+      }
+    });
+
+    // --- Utility ---
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+  </script>
+
+</body>
+</html>
