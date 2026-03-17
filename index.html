@@ -6,44 +6,14 @@
   <title>ATMS Status</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f6f8; color: #1a1a2e; line-height: 1.5; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f5f6f8;
-      color: #1a1a2e;
-      line-height: 1.5;
-    }
-
-    /* ---------- Header ---------- */
-    header {
-      background: #1a1a2e;
-      color: #fff;
-      padding: 28px 24px 20px;
-      text-align: center;
-    }
+    header { background: #1a1a2e; color: #fff; padding: 28px 24px 20px; text-align: center; }
     header h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
-    header .last-updated {
-      font-size: 13px;
-      color: #a0a0b8;
-    }
+    .last-updated { font-size: 13px; color: #a0a0b8; }
 
-    /* ---------- Overall Status Banner ---------- */
-    .overall-banner {
-      margin: 24px auto 0;
-      max-width: 720px;
-      padding: 18px 24px;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 500;
-      text-align: center;
-    }
-    .overall-banner .dot {
-      display: inline-block;
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
+    .overall-banner { margin: 24px auto 0; max-width: 760px; padding: 18px 24px; border-radius: 10px; font-size: 16px; font-weight: 500; text-align: center; }
+    .overall-banner .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
     .status-operational { background: #e6f9ee; color: #15803d; }
     .status-operational .dot { background: #22c55e; }
     .status-issues { background: #fef3c7; color: #92400e; }
@@ -51,325 +21,188 @@
     .status-major { background: #fee2e2; color: #991b1b; }
     .status-major .dot { background: #ef4444; }
 
-    /* ---------- Main Content ---------- */
-    .container {
-      max-width: 720px;
-      margin: 24px auto;
-      padding: 0 16px 60px;
-    }
-
+    .container { max-width: 760px; margin: 24px auto; padding: 0 16px 60px; }
     .section { margin-bottom: 32px; }
-    .section h2 {
-      font-size: 15px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #6b7280;
-      margin-bottom: 12px;
-    }
+    .section h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #6b7280; margin-bottom: 12px; }
 
-    /* Issues list */
-    .issue-card {
-      background: #fff;
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-bottom: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .issue-card .issue-name { font-weight: 500; font-size: 15px; }
-    .issue-card .issue-detail { font-size: 13px; color: #6b7280; margin-top: 2px; }
-    .issue-badge {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 20px;
-      white-space: nowrap;
-    }
+    .notice-card { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 16px 20px; margin-bottom: 10px; }
+    .notice-card h3 { font-size: 14px; font-weight: 700; color: #92400e; margin-bottom: 10px; }
+    .notice-card ul { list-style: none; padding: 0; }
+    .notice-card ul li { font-size: 13px; color: #374151; padding: 4px 0 4px 16px; position: relative; }
+    .notice-card ul li::before { content: '•'; position: absolute; left: 0; color: #d97706; }
+
+    .category-section { background: #fff; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+    .category-header { padding: 12px 20px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; font-size: 13px; font-weight: 700; color: #1a1a2e; }
+    .issue-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 20px; border-bottom: 1px solid #f3f4f6; }
+    .issue-row:last-child { border-bottom: none; }
+    .issue-left { flex: 1; min-width: 0; margin-right: 12px; }
+    .issue-name { font-weight: 500; font-size: 14px; }
+    .issue-detail { font-size: 13px; color: #6b7280; margin-top: 3px; }
+    .issue-reference { font-size: 11px; color: #9ca3af; margin-top: 3px; }
+    .issue-right { flex-shrink: 0; padding-top: 2px; }
+
+    .badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.3px; }
     .badge-investigating { background: #fee2e2; color: #991b1b; }
     .badge-in-progress { background: #fef3c7; color: #92400e; }
     .badge-monitoring { background: #dbeafe; color: #1e40af; }
     .badge-resolved { background: #e6f9ee; color: #15803d; }
+    .badge-workaround { background: #f0fdf4; color: #166534; border: 1px solid #86efac; }
+    .badge-post-go-live { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
 
-    .no-issues {
-      background: #fff;
-      border-radius: 8px;
-      padding: 24px;
-      text-align: center;
-      color: #6b7280;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
+    .no-items { padding: 20px; text-align: center; color: #6b7280; font-size: 14px; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 
-    /* Updates log */
-    .update-entry {
-      background: #fff;
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-bottom: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
-    .update-entry .update-time {
-      font-size: 12px;
-      font-weight: 600;
-      color: #6b7280;
-      margin-bottom: 4px;
-    }
-    .update-entry .update-text { font-size: 14px; }
+    .update-entry { background: #fff; border-radius: 8px; padding: 14px 20px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .update-time { font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px; }
+    .update-text { font-size: 14px; }
 
-    /* Feedback section */
-    .feedback-box {
-      background: #fff;
-      border-radius: 8px;
-      padding: 20px 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      font-size: 14px;
-      color: #374151;
-    }
+    .feedback-box { background: #fff; border-radius: 8px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-size: 14px; color: #374151; }
 
-    /* ---------- Admin Panel ---------- */
-    .admin-bar {
-      background: #eef2ff;
-      border-bottom: 2px solid #6366f1;
-      padding: 10px 24px;
-      text-align: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: #4338ca;
-      display: none;
-    }
+    /* Admin */
+    .admin-bar { background: #eef2ff; border-bottom: 2px solid #6366f1; padding: 10px 24px; text-align: center; font-size: 13px; font-weight: 600; color: #4338ca; display: none; }
     .admin-bar a { color: #4338ca; margin-left: 12px; cursor: pointer; text-decoration: underline; }
-
-    .admin-panel {
-      display: none;
-      max-width: 720px;
-      margin: 0 auto 32px;
-      padding: 0 16px;
-    }
+    .admin-panel { display: none; max-width: 760px; margin: 0 auto 32px; padding: 0 16px; }
     .admin-panel.visible { display: block; }
+    .admin-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; }
+    .admin-section h3 { font-size: 14px; font-weight: 700; margin-bottom: 14px; color: #1a1a2e; }
 
-    .admin-section {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 20px 24px;
-      margin-bottom: 16px;
-    }
-    .admin-section h3 {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: #1a1a2e;
-    }
+    label.fl { display: block; font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; margin-top: 10px; }
+    label.fl:first-of-type { margin-top: 0; }
+    input[type="text"], input[type="password"], textarea, select { width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; font-family: inherit; color: #1a1a2e; }
+    textarea { resize: vertical; min-height: 70px; }
 
-    label.field-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #6b7280;
-      margin-bottom: 4px;
-      margin-top: 10px;
-    }
-    label.field-label:first-of-type { margin-top: 0; }
-
-    input[type="text"], input[type="password"], textarea, select {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 14px;
-      font-family: inherit;
-    }
-    textarea { resize: vertical; min-height: 60px; }
-
-    .btn {
-      display: inline-block;
-      padding: 8px 18px;
-      border: none;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 12px;
-      margin-right: 6px;
-    }
+    .btn { display: inline-block; padding: 7px 16px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px; margin-right: 6px; }
     .btn-primary { background: #4338ca; color: #fff; }
     .btn-primary:hover { background: #3730a3; }
-    .btn-danger { background: #fee2e2; color: #991b1b; }
-    .btn-danger:hover { background: #fecaca; }
-    .btn-secondary { background: #f3f4f6; color: #374151; }
+    .btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
     .btn-secondary:hover { background: #e5e7eb; }
+    .btn-sm { padding: 5px 12px; font-size: 12px; margin-top: 6px; }
+    .btn-x { background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 20px; padding: 2px 8px; line-height: 1; }
+    .btn-x:hover { color: #991b1b; }
 
-    .issue-edit-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 8px;
-      align-items: end;
-      margin-bottom: 8px;
-      padding: 10px;
-      background: #f9fafb;
-      border-radius: 6px;
-    }
-    .issue-edit-row .remove-btn {
-      background: none;
-      border: none;
-      color: #991b1b;
-      cursor: pointer;
-      font-size: 18px;
-      padding: 6px;
-    }
+    .admin-block { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+    .admin-block-header { background: #f9fafb; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+    .admin-block-header input { flex: 1; margin-right: 8px; border: 1px solid #d1d5db; border-radius: 4px; padding: 5px 8px; font-size: 13px; font-weight: 600; }
+    .admin-block-body { padding: 12px 14px; }
 
-    /* Login overlay */
-    .login-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 100;
-      justify-content: center;
-      align-items: center;
-    }
+    .admin-issue-row { background: #f9fafb; border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; display: flex; gap: 8px; align-items: flex-start; }
+    .admin-issue-fields { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .admin-issue-fields .span2 { grid-column: 1 / -1; }
+
+    .login-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; }
     .login-overlay.visible { display: flex; }
-    .login-box {
-      background: #fff;
-      border-radius: 12px;
-      padding: 32px;
-      width: 340px;
-      text-align: center;
-    }
+    .login-box { background: #fff; border-radius: 12px; padding: 32px; width: 340px; text-align: center; }
     .login-box h2 { font-size: 18px; margin-bottom: 16px; }
-    .login-box .error { color: #991b1b; font-size: 13px; margin-top: 8px; display: none; }
+    .error-msg { color: #991b1b; font-size: 13px; margin-top: 8px; display: none; }
 
-    /* Admin toggle link in footer */
-    .admin-link {
-      text-align: center;
-      padding: 20px;
-      font-size: 12px;
-    }
-    .admin-link a {
-      color: #9ca3af;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .admin-link a:hover { color: #6b7280; }
+    .admin-footer { text-align: center; padding: 20px; font-size: 12px; }
+    .admin-footer a { color: #d1d5db; text-decoration: none; cursor: pointer; }
+    .admin-footer a:hover { color: #9ca3af; }
   </style>
 </head>
 <body>
 
-  <!-- Admin bar (shown when logged in) -->
   <div class="admin-bar" id="adminBar">
-    Admin Mode — editing changes are live immediately
-    <a onclick="toggleAdminPanel()">Toggle Editor</a>
+    Admin Mode — changes go live immediately
+    <a onclick="toggleAdmin()">Toggle editor</a>
     <a onclick="logout()">Log out</a>
   </div>
 
-  <!-- Login overlay -->
   <div class="login-overlay" id="loginOverlay">
     <div class="login-box">
       <h2>Admin Login</h2>
-      <label class="field-label">Password</label>
-      <input type="password" id="loginPassword" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
-      <button class="btn btn-primary" style="width:100%;margin-top:12px;" onclick="doLogin()">Log in</button>
-      <div class="error" id="loginError">Incorrect password. Try again.</div>
-      <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="cancelLogin()">Cancel</button>
+      <label class="fl">Password</label>
+      <input type="password" id="loginPw" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="doLogin()">Log in</button>
+      <div class="error-msg" id="loginError">Incorrect password.</div>
+      <button class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="cancelLogin()">Cancel</button>
     </div>
   </div>
 
-  <!-- Header -->
   <header>
     <h1>ATMS Status</h1>
     <div class="last-updated" id="lastUpdated">Last updated: —</div>
   </header>
 
-  <!-- Overall status banner -->
-  <div class="overall-banner status-operational" id="overallBanner">
-    <span class="dot"></span>
-    <span id="overallText">All systems operational</span>
+  <div class="overall-banner status-issues" id="overallBanner">
+    <span class="dot"></span><span id="overallText">Loading...</span>
   </div>
 
   <div class="container">
 
-    <!-- Admin Panel -->
+    <!-- ADMIN PANEL -->
     <div class="admin-panel" id="adminPanel">
 
       <div class="admin-section">
         <h3>Overall Status</h3>
-        <label class="field-label">Status level</label>
-        <select id="adminOverallStatus" onchange="saveOverallStatus()">
+        <label class="fl">Status level</label>
+        <select id="aOverallLevel">
           <option value="operational">All Systems Operational</option>
           <option value="issues">Some Issues</option>
           <option value="major">Major Issues</option>
         </select>
-        <label class="field-label">Custom message (optional — overrides default text)</label>
-        <input type="text" id="adminOverallMessage" placeholder="e.g. We're experiencing login delays" onchange="saveOverallStatus()">
+        <label class="fl">Custom message (optional)</label>
+        <input type="text" id="aOverallMsg" placeholder="e.g. Actively monitoring known issues ahead of go-live">
+        <button class="btn btn-primary" onclick="saveOverallStatus()">Save status</button>
       </div>
 
       <div class="admin-section">
-        <h3>Known Issues</h3>
-        <div id="adminIssuesList"></div>
-        <button class="btn btn-secondary" onclick="addIssueRow()">+ Add issue</button>
-        <button class="btn btn-primary" onclick="saveIssues()">Save issues</button>
+        <h3>Notices / Announcements</h3>
+        <div id="aNoticesList"></div>
+        <button class="btn btn-secondary btn-sm" onclick="addNoticeBlock()">+ Add notice</button>
+        <button class="btn btn-primary btn-sm" onclick="saveNotices()">Save notices</button>
+      </div>
+
+      <div class="admin-section">
+        <h3>Issues by Category</h3>
+        <div id="aCatList"></div>
+        <button class="btn btn-secondary btn-sm" onclick="addCatBlock()">+ Add category</button>
+        <button class="btn btn-primary btn-sm" onclick="saveCategories()">Save all issues</button>
       </div>
 
       <div class="admin-section">
         <h3>Post an Update</h3>
-        <label class="field-label">Update text</label>
-        <textarea id="adminUpdateText" placeholder="e.g. Login times have improved, now averaging under 30 seconds."></textarea>
+        <label class="fl">Update text</label>
+        <textarea id="aUpdateText" placeholder="e.g. Login times have improved. Still monitoring."></textarea>
         <button class="btn btn-primary" onclick="postUpdate()">Post update</button>
       </div>
 
       <div class="admin-section">
         <h3>Feedback Instructions</h3>
-        <label class="field-label">Text shown in the feedback section</label>
-        <textarea id="adminFeedback" placeholder="e.g. Please reach out to Kaitlin via Teams or email..." onchange="saveFeedback()"></textarea>
+        <label class="fl">Text shown in the feedback section</label>
+        <textarea id="aFeedbackText" placeholder="e.g. To share feedback, reach out to Kaitlin via Teams or email."></textarea>
         <button class="btn btn-primary" onclick="saveFeedback()">Save</button>
       </div>
 
     </div>
 
-    <!-- Known Issues (public) -->
+    <!-- PUBLIC: Notices -->
+    <div class="section" id="noticesSection" style="display:none">
+      <h2>Important Information</h2>
+      <div id="noticesList"></div>
+    </div>
+
+    <!-- PUBLIC: Issues -->
     <div class="section">
       <h2>Known Issues</h2>
-      <div id="issuesList">
-        <div class="no-issues">No known issues at this time.</div>
-      </div>
+      <div id="categoriesList"><div class="no-items">No known issues at this time.</div></div>
     </div>
 
-    <!-- Recent Updates (public) -->
+    <!-- PUBLIC: Updates -->
     <div class="section">
       <h2>Recent Updates</h2>
-      <div id="updatesList">
-        <div class="no-issues">No updates yet.</div>
-      </div>
+      <div id="updatesList"><div class="no-items">No updates posted yet.</div></div>
     </div>
 
-    <!-- Feedback (public) -->
+    <!-- PUBLIC: Feedback -->
     <div class="section">
       <h2>Share Feedback</h2>
-      <div class="feedback-box" id="feedbackBox">
-        Have something to report or feedback to share? Please reach out to Kaitlin via Teams or email.
-      </div>
+      <div class="feedback-box" id="feedbackBox">Have something to report or feedback to share? Please reach out to Kaitlin via Teams or email.</div>
     </div>
 
   </div>
 
-  <!-- Small admin link at bottom -->
-  <div class="admin-link">
-    <a onclick="showLogin()">Admin</a>
-  </div>
+  <div class="admin-footer"><a onclick="showLogin()">Admin</a></div>
 
-  <!-- ============================================
-       FIREBASE SETUP — REPLACE THE CONFIG BELOW
-       ============================================
-       1. Go to https://console.firebase.google.com
-       2. Create a new project (name it anything, e.g. "atms-status")
-       3. In Project Settings, scroll to "Your apps" and click the web icon (</>)
-       4. Register the app (no hosting needed), copy the config object
-       5. Paste the values below replacing the YOUR_... placeholders
-       6. Go to "Realtime Database" in the left menu, create a database
-       7. Start in TEST mode (fine for 4 weeks)
-       ============================================ -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script>
@@ -383,220 +216,262 @@
       appId: "1:328973597557:web:44e59890be19d3798a713c",
       measurementId: "G-B50MFDK19R"
     };
-
-    // ——— SET YOUR ADMIN PASSWORD HERE ———
     const ADMIN_PASSWORD = "Beacon*295!";
 
-    // ——————————————————————————————
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
     let isAdmin = false;
 
-    // --- Auth ---
-    function showLogin() {
-      document.getElementById('loginOverlay').classList.add('visible');
-      document.getElementById('loginPassword').focus();
+    // ── SEED DATA ──────────────────────────────────────────────────────────────
+    const SEED = {
+      overall: {
+        level: 'issues',
+        message: 'Actively monitoring known issues ahead of go-live. See details below.',
+        updatedAt: Date.now()
+      },
+      notices: [
+        {
+          title: 'Cutover Day — What Operators Need to Do',
+          bullets: [
+            'The cutover will take approximately 8 hours during business hours. Operators will not have access to iNET or NaviGAtor during most of this window.',
+            'Before cutover begins, TMC operators are responsible for: blanking all DMS, deactivating all active response plans, and noting any open incidents and DMS with scheduled/priority messages.',
+            'During the outage, cameras can still be viewed using Vero.',
+            'After cutover, all new incidents must be initiated in iNET. Operators will need to verify TIRs have migrated correctly and reactivate response plans for any incidents that were open before the switch.',
+            'If the cutover is deemed unsuccessful, there is a 24-hour rollback window to return to NaviGAtor.'
+          ]
+        }
+      ],
+      categories: [
+        {
+          name: 'Login — Expect Delays',
+          issues: [
+            { name: 'Login delays & session timeouts', detail: 'Users are experiencing 2–3 minute delays when logging in. In some cases the session times out and the browser must be restarted. Under active investigation.', status: 'investigating', reference: 'Issue #155' },
+            { name: 'Extended load time after login is expected', detail: 'iNET must load data for 4,000+ cameras, 300+ DMS, 2,500+ active events, and 16,000+ VDS stations. Some visual delays in the map and list view are normal while data finishes loading.', status: 'monitoring', reference: '' }
+          ]
+        },
+        {
+          name: 'CCTV / Cameras',
+          issues: [
+            { name: 'Low-latency video streams intermittently unavailable (black screen)', detail: 'A known Skyline WebRTC bug causes streams to go black. PTZ controls will appear but won\'t work without the stream. Workaround: switch to high-latency view-only mode. Will not delay go-live.', status: 'workaround', reference: '' },
+            { name: 'Cannot PTZ camera despite seeing video', detail: 'Possible reasons: fixed (non-PTZ) camera; Method B camera (no low-latency or PTZ); iNET comm issue; or camera attributes need updating in Skyline. Escalate if encountered.', status: 'monitoring', reference: '' },
+            { name: 'Significant % of CCTV streams not working in R12', detail: 'Open issue actively being worked.', status: 'investigating', reference: 'Issue #167' },
+            { name: 'Some cameras show Comm Failure but remain controllable', detail: '', status: 'monitoring', reference: 'Issue #166' },
+            { name: 'High-latency fallback stream URL not configured for some cameras', detail: 'If low-latency fails, there is no backup view available for affected cameras. Under investigation.', status: 'investigating', reference: 'Issue #165' },
+            { name: 'Non-operational/test cameras showing as active in inventory', detail: 'GDOT/HNTB are compiling a list for removal. Will be addressed at or after cutover.', status: 'in-progress', reference: 'Issue #159' }
+          ]
+        },
+        {
+          name: 'DMS',
+          issues: [
+            { name: 'Cobb County DMS intermittent connectivity', detail: 'Possible cause is a datacenter move or TMC power outage around Feb 26. Being troubleshot.', status: 'investigating', reference: 'Issue #168' },
+            { name: 'Cannot add messages with images to DMS sign library', detail: 'Workaround: send the message directly to the sign rather than saving to the library. A fix requires a new build post go-live.', status: 'workaround', reference: 'Issue #162' }
+          ]
+        },
+        {
+          name: 'Event Management',
+          issues: [
+            { name: 'Region field shows group role instead of region when creating an event', detail: 'Requires a post go-live build to fix.', status: 'post-go-live', reference: 'Issue #157' },
+            { name: 'Some operators unable to terminate events', detail: 'Believed to be a permissions/configuration issue. Will be validated and addressed at go-live.', status: 'in-progress', reference: 'Issue #158' }
+          ]
+        },
+        {
+          name: 'Map / Traffic Data',
+          issues: [
+            { name: 'VDS station icons missing from map', detail: 'Speed layer works, but individual station icons are missing. Workaround: use the segments and speed view. Requires a post go-live fix.', status: 'workaround', reference: 'Issue #156' }
+          ]
+        },
+        {
+          name: 'HERO / CHAMP',
+          issues: [
+            { name: 'Loss of HERO ALADS functionality', detail: 'Acknowledged loss in iNET. Will be addressed post go-live. In the interim, CHAMP drivers can be assigned and dispatched via the SSP tab within an event.', status: 'post-go-live', reference: '' }
+          ]
+        }
+      ],
+      feedback: { text: 'Have something to report or feedback to share? Please reach out to Kaitlin via Teams or email.' }
+    };
+
+    // Seed Firebase on first load only
+    db.ref('seeded').once('value', snap => {
+      if (!snap.val()) {
+        db.ref('overall').set(SEED.overall);
+        db.ref('notices').set(SEED.notices);
+        db.ref('categories').set(SEED.categories);
+        db.ref('feedback').set(SEED.feedback);
+        db.ref('seeded').set(true);
+      }
+    });
+
+    // ── HELPERS ────────────────────────────────────────────────────────────────
+    function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+    function fmt(ts) {
+      const d = new Date(ts);
+      const mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+      let h = d.getHours(), m = String(d.getMinutes()).padStart(2,'0'), ap = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${mo} ${d.getDate()}, ${h}:${m} ${ap}`;
     }
-    function cancelLogin() {
-      document.getElementById('loginOverlay').classList.remove('visible');
-      document.getElementById('loginPassword').value = '';
-      document.getElementById('loginError').style.display = 'none';
-    }
+    const BADGE = { investigating: 'Investigating', 'in-progress': 'In Progress', monitoring: 'Monitoring', resolved: 'Resolved', workaround: 'Workaround Available', 'post-go-live': 'Post Go-Live Fix' };
+
+    // ── AUTH ───────────────────────────────────────────────────────────────────
+    function showLogin() { document.getElementById('loginOverlay').classList.add('visible'); document.getElementById('loginPw').focus(); }
+    function cancelLogin() { document.getElementById('loginOverlay').classList.remove('visible'); document.getElementById('loginPw').value = ''; document.getElementById('loginError').style.display = 'none'; }
     function doLogin() {
-      const pw = document.getElementById('loginPassword').value;
-      if (pw === ADMIN_PASSWORD) {
-        isAdmin = true;
-        cancelLogin();
+      if (document.getElementById('loginPw').value === ADMIN_PASSWORD) {
+        isAdmin = true; cancelLogin();
         document.getElementById('adminBar').style.display = 'block';
         document.getElementById('adminPanel').classList.add('visible');
-      } else {
-        document.getElementById('loginError').style.display = 'block';
-      }
+      } else { document.getElementById('loginError').style.display = 'block'; }
     }
-    function logout() {
-      isAdmin = false;
-      document.getElementById('adminBar').style.display = 'none';
-      document.getElementById('adminPanel').classList.remove('visible');
-    }
-    function toggleAdminPanel() {
-      document.getElementById('adminPanel').classList.toggle('visible');
-    }
+    function logout() { isAdmin = false; document.getElementById('adminBar').style.display = 'none'; document.getElementById('adminPanel').classList.remove('visible'); }
+    function toggleAdmin() { document.getElementById('adminPanel').classList.toggle('visible'); }
 
-    // --- Formatting helpers ---
-    function formatDate(ts) {
-      const d = new Date(ts);
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const month = months[d.getMonth()];
-      const day = d.getDate();
-      let hours = d.getHours();
-      const mins = String(d.getMinutes()).padStart(2, '0');
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12 || 12;
-      return `${month} ${day}, ${hours}:${mins} ${ampm}`;
-    }
-
-    // --- Overall status ---
+    // ── OVERALL STATUS ─────────────────────────────────────────────────────────
     function saveOverallStatus() {
-      const level = document.getElementById('adminOverallStatus').value;
-      const msg = document.getElementById('adminOverallMessage').value.trim();
-      db.ref('overall').set({ level, message: msg, updatedAt: Date.now() });
+      db.ref('overall').set({ level: document.getElementById('aOverallLevel').value, message: document.getElementById('aOverallMsg').value.trim(), updatedAt: Date.now() });
     }
-
     db.ref('overall').on('value', snap => {
-      const data = snap.val() || { level: 'operational', message: '', updatedAt: null };
-      const banner = document.getElementById('overallBanner');
-      const text = document.getElementById('overallText');
-      const updated = document.getElementById('lastUpdated');
-
-      banner.className = 'overall-banner';
-      const defaults = {
-        operational: 'All systems operational',
-        issues: 'We\'re experiencing some issues — see details below',
-        major: 'We\'re experiencing major issues — see details below'
-      };
-      banner.classList.add('status-' + (data.level === 'issues' ? 'issues' : data.level === 'major' ? 'major' : 'operational'));
-      text.textContent = data.message || defaults[data.level] || defaults.operational;
-
-      if (data.updatedAt) {
-        updated.textContent = 'Last updated: ' + formatDate(data.updatedAt);
-      }
-
-      // Sync admin fields
-      if (isAdmin) {
-        document.getElementById('adminOverallStatus').value = data.level || 'operational';
-        document.getElementById('adminOverallMessage').value = data.message || '';
-      }
+      const d = snap.val() || { level: 'operational', message: '', updatedAt: null };
+      const defaults = { operational: 'All systems operational', issues: 'We\'re actively monitoring known issues — see details below', major: 'We\'re experiencing major issues — see details below' };
+      document.getElementById('overallBanner').className = 'overall-banner status-' + (d.level || 'operational');
+      document.getElementById('overallText').textContent = d.message || defaults[d.level] || defaults.operational;
+      if (d.updatedAt) document.getElementById('lastUpdated').textContent = 'Last updated: ' + fmt(d.updatedAt);
+      if (isAdmin) { document.getElementById('aOverallLevel').value = d.level || 'operational'; document.getElementById('aOverallMsg').value = d.message || ''; }
     });
 
-    // --- Issues ---
-    function addIssueRow(name, detail, status) {
-      const container = document.getElementById('adminIssuesList');
-      const row = document.createElement('div');
-      row.className = 'issue-edit-row';
-      row.innerHTML = `
-        <div>
-          <label class="field-label">Issue</label>
-          <input type="text" class="issue-name" placeholder="e.g. Slow login times" value="${name || ''}">
-          <label class="field-label">Detail (optional)</label>
-          <input type="text" class="issue-detail" placeholder="e.g. Averaging 2-3 min" value="${detail || ''}">
+    // ── NOTICES ────────────────────────────────────────────────────────────────
+    function addNoticeBlock(title, bullets) {
+      const b = document.createElement('div');
+      b.className = 'admin-block';
+      b.innerHTML = `
+        <div class="admin-block-header">
+          <input type="text" class="n-title" placeholder="Notice title" value="${esc(title||'')}">
+          <button class="btn-x" onclick="this.closest('.admin-block').remove()">&times;</button>
         </div>
-        <div>
-          <label class="field-label">Status</label>
-          <select class="issue-status">
-            <option value="investigating" ${status==='investigating'?'selected':''}>Investigating</option>
-            <option value="in-progress" ${status==='in-progress'?'selected':''}>In Progress</option>
-            <option value="monitoring" ${status==='monitoring'?'selected':''}>Monitoring</option>
-            <option value="resolved" ${status==='resolved'?'selected':''}>Resolved</option>
-          </select>
-        </div>
-        <button class="remove-btn" onclick="this.parentElement.remove()" title="Remove">&times;</button>
-      `;
-      container.appendChild(row);
+        <div class="admin-block-body">
+          <label class="fl">Bullet points (one per line)</label>
+          <textarea class="n-bullets" rows="5" placeholder="One bullet per line...">${esc((bullets||[]).join('\n'))}</textarea>
+        </div>`;
+      document.getElementById('aNoticesList').appendChild(b);
     }
-
-    function saveIssues() {
-      const rows = document.querySelectorAll('#adminIssuesList .issue-edit-row');
-      const issues = [];
-      rows.forEach(row => {
-        const name = row.querySelector('.issue-name').value.trim();
-        if (!name) return;
-        issues.push({
-          name,
-          detail: row.querySelector('.issue-detail').value.trim(),
-          status: row.querySelector('.issue-status').value
-        });
+    function saveNotices() {
+      const notices = [];
+      document.querySelectorAll('#aNoticesList .admin-block').forEach(b => {
+        const title = b.querySelector('.n-title').value.trim();
+        const bullets = b.querySelector('.n-bullets').value.split('\n').map(s=>s.trim()).filter(Boolean);
+        if (title) notices.push({ title, bullets });
       });
-      db.ref('issues').set(issues);
-      db.ref('overall/updatedAt').set(Date.now());
+      db.ref('notices').set(notices); db.ref('overall/updatedAt').set(Date.now());
     }
-
-    db.ref('issues').on('value', snap => {
-      const issues = snap.val() || [];
-      const listEl = document.getElementById('issuesList');
-
-      if (!issues.length) {
-        listEl.innerHTML = '<div class="no-issues">No known issues at this time.</div>';
-      } else {
-        listEl.innerHTML = issues.map(issue => {
-          const badgeClass = 'badge-' + issue.status;
-          const badgeLabels = {
-            'investigating': 'Investigating',
-            'in-progress': 'In Progress',
-            'monitoring': 'Monitoring',
-            'resolved': 'Resolved'
-          };
-          return `
-            <div class="issue-card">
-              <div>
-                <div class="issue-name">${escapeHtml(issue.name)}</div>
-                ${issue.detail ? `<div class="issue-detail">${escapeHtml(issue.detail)}</div>` : ''}
-              </div>
-              <span class="issue-badge ${badgeClass}">${badgeLabels[issue.status] || issue.status}</span>
-            </div>
-          `;
-        }).join('');
-      }
-
-      // Sync admin fields
-      if (isAdmin) {
-        const container = document.getElementById('adminIssuesList');
-        container.innerHTML = '';
-        issues.forEach(i => addIssueRow(i.name, i.detail, i.status));
-      }
+    db.ref('notices').on('value', snap => {
+      const notices = snap.val() || [];
+      const section = document.getElementById('noticesSection');
+      document.getElementById('noticesList').innerHTML = notices.map(n => `
+        <div class="notice-card">
+          <h3>${esc(n.title)}</h3>
+          <ul>${(n.bullets||[]).map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
+        </div>`).join('');
+      section.style.display = notices.length ? 'block' : 'none';
+      if (isAdmin) { document.getElementById('aNoticesList').innerHTML = ''; notices.forEach(n => addNoticeBlock(n.title, n.bullets)); }
     });
 
-    // --- Updates ---
-    function postUpdate() {
-      const text = document.getElementById('adminUpdateText').value.trim();
-      if (!text) return;
-      const newRef = db.ref('updates').push();
-      newRef.set({ text, timestamp: Date.now() });
-      db.ref('overall/updatedAt').set(Date.now());
-      document.getElementById('adminUpdateText').value = '';
+    // ── CATEGORIES / ISSUES ────────────────────────────────────────────────────
+    function addCatBlock(name, issues) {
+      const b = document.createElement('div');
+      b.className = 'admin-block';
+      b.innerHTML = `
+        <div class="admin-block-header">
+          <input type="text" class="c-name" placeholder="Category name" value="${esc(name||'')}">
+          <button class="btn-x" onclick="this.closest('.admin-block').remove()">&times;</button>
+        </div>
+        <div class="admin-block-body c-issues"></div>
+        <div style="padding:0 14px 12px">
+          <button class="btn btn-secondary btn-sm" onclick="addIssueRow(this.previousElementSibling)">+ Add issue</button>
+        </div>`;
+      document.getElementById('aCatList').appendChild(b);
+      const ic = b.querySelector('.c-issues');
+      (issues||[]).forEach(i => addIssueRow(ic, i.name, i.detail, i.status, i.reference));
     }
+    function addIssueRow(container, name, detail, status, ref) {
+      const r = document.createElement('div');
+      r.className = 'admin-issue-row';
+      r.innerHTML = `
+        <div class="admin-issue-fields">
+          <div class="span2"><label class="fl">Issue name</label><input type="text" class="i-name" placeholder="Short description" value="${esc(name||'')}"></div>
+          <div class="span2"><label class="fl">Detail (optional)</label><textarea class="i-detail" rows="2">${esc(detail||'')}</textarea></div>
+          <div>
+            <label class="fl">Status</label>
+            <select class="i-status">
+              <option value="investigating" ${status==='investigating'?'selected':''}>Investigating</option>
+              <option value="in-progress" ${status==='in-progress'?'selected':''}>In Progress</option>
+              <option value="monitoring" ${status==='monitoring'?'selected':''}>Monitoring</option>
+              <option value="workaround" ${status==='workaround'?'selected':''}>Workaround Available</option>
+              <option value="post-go-live" ${status==='post-go-live'?'selected':''}>Post Go-Live Fix</option>
+              <option value="resolved" ${status==='resolved'?'selected':''}>Resolved</option>
+            </select>
+          </div>
+          <div><label class="fl">Reference (optional)</label><input type="text" class="i-ref" placeholder="e.g. Issue #155" value="${esc(ref||'')}"></div>
+        </div>
+        <button class="btn-x" onclick="this.parentElement.remove()" style="margin-top:20px">&times;</button>`;
+      container.appendChild(r);
+    }
+    function saveCategories() {
+      const cats = [];
+      document.querySelectorAll('#aCatList .admin-block').forEach(b => {
+        const name = b.querySelector('.c-name').value.trim();
+        if (!name) return;
+        const issues = [];
+        b.querySelectorAll('.admin-issue-row').forEach(r => {
+          const n = r.querySelector('.i-name').value.trim();
+          if (n) issues.push({ name: n, detail: r.querySelector('.i-detail').value.trim(), status: r.querySelector('.i-status').value, reference: r.querySelector('.i-ref').value.trim() });
+        });
+        cats.push({ name, issues });
+      });
+      db.ref('categories').set(cats); db.ref('overall/updatedAt').set(Date.now());
+    }
+    db.ref('categories').on('value', snap => {
+      const cats = snap.val() || [];
+      const el = document.getElementById('categoriesList');
+      if (!cats.length) { el.innerHTML = '<div class="no-items">No known issues at this time.</div>'; }
+      else {
+        el.innerHTML = cats.map(cat => `
+          <div class="category-section">
+            <div class="category-header">${esc(cat.name)}</div>
+            ${(cat.issues||[]).map(i => `
+              <div class="issue-row">
+                <div class="issue-left">
+                  <div class="issue-name">${esc(i.name)}</div>
+                  ${i.detail ? `<div class="issue-detail">${esc(i.detail)}</div>` : ''}
+                  ${i.reference ? `<div class="issue-reference">${esc(i.reference)}</div>` : ''}
+                </div>
+                <div class="issue-right"><span class="badge badge-${i.status}">${BADGE[i.status]||i.status}</span></div>
+              </div>`).join('')}
+          </div>`).join('');
+      }
+      if (isAdmin) { document.getElementById('aCatList').innerHTML = ''; cats.forEach(c => addCatBlock(c.name, c.issues)); }
+    });
 
+    // ── UPDATES ────────────────────────────────────────────────────────────────
+    function postUpdate() {
+      const text = document.getElementById('aUpdateText').value.trim();
+      if (!text) return;
+      db.ref('updates').push({ text, timestamp: Date.now() }); db.ref('overall/updatedAt').set(Date.now());
+      document.getElementById('aUpdateText').value = '';
+    }
     db.ref('updates').on('value', snap => {
       const data = snap.val();
-      const listEl = document.getElementById('updatesList');
-
-      if (!data) {
-        listEl.innerHTML = '<div class="no-issues">No updates yet.</div>';
-        return;
-      }
-
-      const updates = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
-      listEl.innerHTML = updates.map(u => `
-        <div class="update-entry">
-          <div class="update-time">${formatDate(u.timestamp)}</div>
-          <div class="update-text">${escapeHtml(u.text)}</div>
-        </div>
-      `).join('');
+      const el = document.getElementById('updatesList');
+      if (!data) { el.innerHTML = '<div class="no-items">No updates posted yet.</div>'; return; }
+      el.innerHTML = Object.values(data).sort((a,b)=>b.timestamp-a.timestamp).map(u => `
+        <div class="update-entry"><div class="update-time">${fmt(u.timestamp)}</div><div class="update-text">${esc(u.text)}</div></div>`).join('');
     });
 
-    // --- Feedback ---
-    function saveFeedback() {
-      const text = document.getElementById('adminFeedback').value.trim();
-      db.ref('feedback').set({ text });
-    }
-
+    // ── FEEDBACK ───────────────────────────────────────────────────────────────
+    function saveFeedback() { db.ref('feedback').set({ text: document.getElementById('aFeedbackText').value.trim() }); }
     db.ref('feedback').on('value', snap => {
-      const data = snap.val();
-      const box = document.getElementById('feedbackBox');
-      const text = data?.text || 'Have something to report or feedback to share? Please reach out to Kaitlin via Teams or email.';
-      box.textContent = text;
-      if (isAdmin) {
-        document.getElementById('adminFeedback').value = data?.text || '';
-      }
+      const text = snap.val()?.text || 'Have something to report or feedback to share? Please reach out to Kaitlin via Teams or email.';
+      document.getElementById('feedbackBox').textContent = text;
+      if (isAdmin) document.getElementById('aFeedbackText').value = snap.val()?.text || '';
     });
-
-    // --- Utility ---
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
   </script>
-
 </body>
 </html>
