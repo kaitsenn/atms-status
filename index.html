@@ -320,7 +320,28 @@
         isAdmin = true; cancelLogin();
         document.getElementById('adminBar').style.display = 'block';
         document.getElementById('adminPanel').classList.add('visible');
+        refreshAdminPanels();
       } else { document.getElementById('loginError').style.display = 'block'; }
+    }
+    function refreshAdminPanels() {
+      db.ref('overall').once('value', snap => {
+        const d = snap.val() || {};
+        document.getElementById('aOverallLevel').value = d.level || 'operational';
+        document.getElementById('aOverallMsg').value = d.message || '';
+      });
+      db.ref('notices').once('value', snap => {
+        const notices = snap.val() || [];
+        document.getElementById('aNoticesList').innerHTML = '';
+        notices.forEach(n => addNoticeBlock(n.title, n.bullets));
+      });
+      db.ref('categories').once('value', snap => {
+        const cats = snap.val() || [];
+        document.getElementById('aCatList').innerHTML = '';
+        cats.forEach(c => addCatBlock(c.name, c.issues));
+      });
+      db.ref('feedback').once('value', snap => {
+        document.getElementById('aFeedbackText').value = snap.val()?.text || '';
+      });
     }
     function logout() { isAdmin = false; document.getElementById('adminBar').style.display = 'none'; document.getElementById('adminPanel').classList.remove('visible'); }
     function toggleAdmin() { document.getElementById('adminPanel').classList.toggle('visible'); }
