@@ -407,7 +407,7 @@
         </div>
         <div class="admin-block-body c-issues"></div>
         <div style="padding:0 14px 12px">
-          <button class="btn btn-secondary btn-sm" onclick="addIssueRow(this.previousElementSibling)">+ Add issue</button>
+          <button class="btn btn-secondary btn-sm" onclick="addIssueRow(this.parentElement.previousElementSibling)">+ Add issue</button>
         </div>`;
       document.getElementById('aCatList').appendChild(b);
       const ic = b.querySelector('.c-issues');
