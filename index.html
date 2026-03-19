@@ -226,18 +226,16 @@
     const SEED = {
       overall: {
         level: 'issues',
-        message: 'Actively monitoring known issues ahead of go-live. See details below.',
+        message: 'Actively monitoring known issues post go-live. See details below.',
         updatedAt: Date.now()
       },
       notices: [
         {
-          title: 'Cutover Day — What Operators Need to Do',
+          title: 'Successful ATMS Go-Live',
           bullets: [
-            'The cutover will take approximately 8 hours during business hours. Operators will not have access to iNET or NaviGAtor during most of this window.',
-            'Before cutover begins, TMC operators are responsible for: blanking all DMS, deactivating all active response plans, and noting any open incidents and DMS with scheduled/priority messages.',
-            'During the outage, cameras can still be viewed using Vero.',
-            'After cutover, all new incidents must be initiated in iNET. Operators will need to verify TIRs have migrated correctly and reactivate response plans for any incidents that were open before the switch.',
-            'If the cutover is deemed unsuccessful, there is a 24-hour rollback window to return to NaviGAtor.'
+            'ATMS successfully went live on March 19, 2026.',
+            'All new incidents must be initiated in iNET. Verify TIRs have migrated correctly and reactivate response plans for any incidents that were open before the switch.',
+            'After cutover, cameras can still be viewed using Vero if needed.'
           ]
         }
       ],
@@ -252,12 +250,11 @@
         {
           name: 'CCTV / Cameras',
           issues: [
-            { name: 'Low-latency video streams intermittently unavailable (black screen)', detail: 'A known Skyline WebRTC bug causes streams to go black. PTZ controls will appear but won\'t work without the stream. Workaround: switch to high-latency view-only mode. Will not delay go-live.', status: 'workaround', reference: '' },
+            { name: 'Low-latency video streams intermittently unavailable (black screen)', detail: 'A known Skyline WebRTC bug causes streams to go black. PTZ controls will appear but won\'t work without the stream. Workaround: switch to high-latency view-only mode.', status: 'workaround', reference: '' },
             { name: 'Cannot PTZ camera despite seeing video', detail: 'Possible reasons: fixed (non-PTZ) camera; Method B camera (no low-latency or PTZ); iNET comm issue; or camera attributes need updating in Skyline. Escalate if encountered.', status: 'monitoring', reference: '' },
-            { name: 'Significant % of CCTV streams not working in R12', detail: 'Open issue actively being worked.', status: 'investigating', reference: 'Issue #167' },
             { name: 'Some cameras show Comm Failure but remain controllable', detail: '', status: 'monitoring', reference: 'Issue #166' },
             { name: 'High-latency fallback stream URL not configured for some cameras', detail: 'If low-latency fails, there is no backup view available for affected cameras. Under investigation.', status: 'investigating', reference: 'Issue #165' },
-            { name: 'Non-operational/test cameras showing as active in inventory', detail: 'GDOT/HNTB are compiling a list for removal. Will be addressed at or after cutover.', status: 'in-progress', reference: 'Issue #159' }
+            { name: 'Camera inventory still being updated', detail: 'Missing cameras (in particular Cobb & Gwinnett County) are still being updated and should come online over the next ~week.', status: 'in-progress', reference: '' }
           ]
         },
         {
@@ -271,19 +268,22 @@
           name: 'Event Management',
           issues: [
             { name: 'Region field shows group role instead of region when creating an event', detail: 'Requires a post go-live build to fix.', status: 'post-go-live', reference: 'Issue #157' },
-            { name: 'Some operators unable to terminate events', detail: 'Believed to be a permissions/configuration issue. Will be validated and addressed at go-live.', status: 'in-progress', reference: 'Issue #158' }
+            { name: 'Some operators unable to terminate events', detail: 'Believed to be a permissions/configuration issue. Will be validated and addressed at go-live.', status: 'in-progress', reference: 'Issue #158' },
+            { name: 'Event notification emails not sending', detail: 'Certain events are set to trigger automated emails, but those emails are not being successfully sent. This does not affect RAVE alerts.', status: 'investigating', reference: '' }
           ]
         },
         {
           name: 'Map / Traffic Data',
           issues: [
-            { name: 'VDS station icons missing from map', detail: 'Speed layer works, but individual station icons are missing. Workaround: use the segments and speed view. Requires a post go-live fix.', status: 'workaround', reference: 'Issue #156' }
+            { name: 'VDS station icons missing from map', detail: 'Speed layer works, but individual station icons are missing. Workaround: use the segments and speed view. Requires a post go-live fix.', status: 'workaround', reference: 'Issue #156' },
+            { name: 'VDS viewer issue — some devices not showing in viewer or list', detail: 'Some VDS devices are not showing up in the VDS viewer or list, but all VDS devices are showing up on the map.', status: 'investigating', reference: '' }
           ]
         },
         {
           name: 'HERO / CHAMP',
           issues: [
-            { name: 'Loss of HERO ALADS functionality', detail: 'Acknowledged loss in iNET. Will be addressed post go-live. In the interim, CHAMP drivers can be assigned and dispatched via the SSP tab within an event.', status: 'post-go-live', reference: '' }
+            { name: 'Loss of HERO ALADS functionality', detail: 'Acknowledged loss in iNET. Will be addressed post go-live. In the interim, CHAMP drivers can be assigned and dispatched via the SSP tab within an event.', status: 'post-go-live', reference: '' },
+            { name: 'CHAMP polling not updating', detail: 'Inventory information (vehicles, drivers, etc.) is being imported, but the polling is not updating.', status: 'investigating', reference: '' }
           ]
         }
       ],
@@ -330,12 +330,12 @@
         document.getElementById('aOverallMsg').value = d.message || '';
       });
       db.ref('notices').once('value', snap => {
-        const notices = snap.val() || [];
+        const notices = Object.values(snap.val() || {});
         document.getElementById('aNoticesList').innerHTML = '';
         notices.forEach(n => addNoticeBlock(n.title, n.bullets));
       });
       db.ref('categories').once('value', snap => {
-        const cats = snap.val() || [];
+        const cats = Object.values(snap.val() || {});
         document.getElementById('aCatList').innerHTML = '';
         cats.forEach(c => addCatBlock(c.name, c.issues));
       });
@@ -386,13 +386,14 @@
     db.ref('notices').on('value', snap => {
       const notices = snap.val() || [];
       const section = document.getElementById('noticesSection');
-      document.getElementById('noticesList').innerHTML = notices.map(n => `
+      const noticesArr = Object.values(notices||{});
+      document.getElementById('noticesList').innerHTML = noticesArr.map(n => `
         <div class="notice-card">
           <h3>${esc(n.title)}</h3>
-          <ul>${(n.bullets||[]).map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
+          <ul>${Object.values(n.bullets||{}).map(b=>`<li>${esc(b)}</li>`).join('')}</ul>
         </div>`).join('');
-      section.style.display = notices.length ? 'block' : 'none';
-      if (isAdmin) { document.getElementById('aNoticesList').innerHTML = ''; notices.forEach(n => addNoticeBlock(n.title, n.bullets)); }
+      section.style.display = noticesArr.length ? 'block' : 'none';
+      if (isAdmin) { document.getElementById('aNoticesList').innerHTML = ''; noticesArr.forEach(n => addNoticeBlock(n.title, Object.values(n.bullets||{}))); }
     });
 
     // ── CATEGORIES / ISSUES ────────────────────────────────────────────────────
@@ -410,7 +411,7 @@
         </div>`;
       document.getElementById('aCatList').appendChild(b);
       const ic = b.querySelector('.c-issues');
-      (issues||[]).forEach(i => addIssueRow(ic, i.name, i.detail, i.status, i.reference));
+      Object.values(issues||{}).forEach(i => addIssueRow(ic, i.name, i.detail, i.status, i.reference));
     }
     function addIssueRow(container, name, detail, status, ref) {
       const r = document.createElement('div');
@@ -450,14 +451,14 @@
       db.ref('categories').set(cats); db.ref('overall/updatedAt').set(Date.now());
     }
     db.ref('categories').on('value', snap => {
-      const cats = snap.val() || [];
+      const cats = Object.values(snap.val() || {});
       const el = document.getElementById('categoriesList');
       if (!cats.length) { el.innerHTML = '<div class="no-items">No known issues at this time.</div>'; }
       else {
         el.innerHTML = cats.map(cat => `
           <div class="category-section">
             <div class="category-header">${esc(cat.name)}</div>
-            ${(cat.issues||[]).map(i => `
+            ${Object.values(cat.issues||{}).map(i => `
               <div class="issue-row">
                 <div class="issue-left">
                   <div class="issue-name">${esc(i.name)}</div>
