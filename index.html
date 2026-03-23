@@ -97,6 +97,41 @@
     .admin-footer { text-align: center; padding: 20px; font-size: 12px; }
     .admin-footer a { color: #d1d5db; text-decoration: none; cursor: pointer; }
     .admin-footer a:hover { color: #9ca3af; }
+
+    /* Submitted Issues Summary */
+    .summary-card { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+    .summary-card-header { padding: 14px 20px 10px; border-bottom: 1px solid #f3f4f6; display: flex; justify-content: space-between; align-items: baseline; }
+    .summary-card-header h3 { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+    .summary-updated { font-size: 11px; color: #9ca3af; }
+    .summary-body { padding: 16px 20px; }
+    .summary-row { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .summary-stat-group { flex: 1; min-width: 180px; }
+    .summary-stat-group h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; margin-bottom: 8px; }
+    .stat-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .stat-chip { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
+    .stat-chip .chip-count { font-size: 14px; }
+    .chip-new { background: #f0f9ff; color: #0369a1; }
+    .chip-inprogress { background: #fef3c7; color: #92400e; }
+    .chip-completed { background: #e6f9ee; color: #15803d; }
+    .chip-bydesign { background: #f3f4f6; color: #374151; }
+    .chip-duplicate { background: #f5f3ff; color: #5b21b6; }
+    .chip-critical { background: #fee2e2; color: #991b1b; }
+    .chip-high { background: #ffedd5; color: #9a3412; }
+    .chip-normal { background: #f0fdf4; color: #166534; }
+    .chip-low { background: #f9fafb; color: #6b7280; border: 1px solid #e5e7eb; }
+    .summary-total { font-size: 28px; font-weight: 700; color: #1a1a2e; line-height: 1; }
+    .summary-total-label { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .summary-total-wrap { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f3f4f6; }
+    .summary-divider { width: 1px; height: 40px; background: #e5e7eb; }
+    .summary-themes h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; margin-bottom: 8px; }
+    .theme-list { list-style: none; padding: 0; }
+    .theme-list li { font-size: 13px; color: #374151; padding: 4px 0 4px 16px; position: relative; }
+    .theme-list li::before { content: '→'; position: absolute; left: 0; color: #9ca3af; font-size: 11px; top: 5px; }
+
+    /* Summary admin inputs */
+    .summary-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 8px; }
+    .summary-admin-field label { display: block; font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+    .summary-admin-field input[type="number"] { width: 100%; padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -167,6 +202,33 @@
       </div>
 
       <div class="admin-section">
+        <h3>Submitted Issues Summary</h3>
+        <p style="font-size:13px;color:#6b7280;margin-bottom:12px">Update these numbers after reviewing the operator issue tracker spreadsheet. Changes go live immediately.</p>
+        <label class="fl">Total issues submitted</label>
+        <div class="summary-admin-grid" style="grid-template-columns:repeat(auto-fill,minmax(90px,1fr))">
+          <div class="summary-admin-field"><label>Total</label><input type="number" id="aSumTotal" min="0" value="0"></div>
+        </div>
+        <label class="fl" style="margin-top:14px">By status</label>
+        <div class="summary-admin-grid">
+          <div class="summary-admin-field"><label>New</label><input type="number" id="aSumNew" min="0" value="0"></div>
+          <div class="summary-admin-field"><label>In Progress</label><input type="number" id="aSumInProgress" min="0" value="0"></div>
+          <div class="summary-admin-field"><label>Completed</label><input type="number" id="aSumCompleted" min="0" value="0"></div>
+          <div class="summary-admin-field"><label>By Design</label><input type="number" id="aSumByDesign" min="0" value="0"></div>
+          <div class="summary-admin-field"><label>Duplicate</label><input type="number" id="aSumDuplicate" min="0" value="0"></div>
+        </div>
+        <label class="fl" style="margin-top:14px">By priority</label>
+        <div class="summary-admin-grid">
+          <div class="summary-admin-field"><label>Critical</label><input type="number" id="aSumCritical" min="0" value="0"></div>
+          <div class="summary-admin-field"><label>High</label><input type="number" id="aSumHigh" min="0" value="0"></div>
+          <div class="summary-admin-field"><label>Normal</label><input type="number" id="aSumNormal" min="0" value="0"></div>
+          <div class="summary-admin-field"><label>Low</label><input type="number" id="aSumLow" min="0" value="0"></div>
+        </div>
+        <label class="fl" style="margin-top:14px">Top reported themes (one per line)</label>
+        <textarea id="aSumThemes" rows="6" placeholder="One theme per line, e.g.:&#10;Region field auto-populates with wrong value (7 reports)&#10;Map legend not loading (5 reports)"></textarea>
+        <button class="btn btn-primary" onclick="saveIssueSummary()">Save summary</button>
+      </div>
+
+      <div class="admin-section">
         <h3>Feedback Instructions</h3>
         <label class="fl">Text shown in the feedback section</label>
         <textarea id="aFeedbackText" placeholder="e.g. To share feedback, reach out to Kaitlin via Teams or email."></textarea>
@@ -185,6 +247,12 @@
     <div class="section">
       <h2>Known Issues</h2>
       <div id="categoriesList"><div class="no-items">No known issues at this time.</div></div>
+    </div>
+
+    <!-- PUBLIC: Submitted Issues Summary -->
+    <div class="section" id="issueSummarySection" style="display:none">
+      <h2>Operator-Submitted Issues</h2>
+      <div id="issueSummaryContent"></div>
     </div>
 
     <!-- PUBLIC: Updates -->
@@ -287,7 +355,21 @@
           ]
         }
       ],
-      feedback: { text: 'Have something to report or feedback to share? Please reach out to Kaitlin via Teams or email.' }
+      feedback: { text: 'Have something to report or feedback to share? Please reach out to Kaitlin via Teams or email.' },
+      issueSummary: {
+        total: 49,
+        byStatus: { new: 22, inProgress: 14, completed: 2, byDesign: 3, duplicate: 8 },
+        byPriority: { critical: 6, high: 13, normal: 23, low: 7 },
+        themes: [
+          'Region field auto-populates with wrong value (7 reports)',
+          'Map legend not loading or missing (5 reports)',
+          'CCTV / camera streams failing to load (4+ reports)',
+          'Slow performance — notes, status updates, and events taking 40s–1 min (4 reports)',
+          'Event confirm / terminate button not working (3 reports)',
+          'DMS library not loading or not displaying on map (3 reports)'
+        ],
+        updatedAt: Date.now()
+      }
     };
 
     // Seed Firebase on first load only
@@ -297,6 +379,7 @@
         db.ref('notices').set(SEED.notices);
         db.ref('categories').set(SEED.categories);
         db.ref('feedback').set(SEED.feedback);
+        db.ref('issueSummary').set(SEED.issueSummary);
         db.ref('seeded').set(true);
       }
     });
@@ -341,6 +424,22 @@
       });
       db.ref('feedback').once('value', snap => {
         document.getElementById('aFeedbackText').value = snap.val()?.text || '';
+      });
+      db.ref('issueSummary').once('value', snap => {
+        const d = snap.val() || {};
+        document.getElementById('aSumTotal').value = d.total || 0;
+        const s = d.byStatus || {};
+        document.getElementById('aSumNew').value = s.new || 0;
+        document.getElementById('aSumInProgress').value = s.inProgress || 0;
+        document.getElementById('aSumCompleted').value = s.completed || 0;
+        document.getElementById('aSumByDesign').value = s.byDesign || 0;
+        document.getElementById('aSumDuplicate').value = s.duplicate || 0;
+        const p = d.byPriority || {};
+        document.getElementById('aSumCritical').value = p.critical || 0;
+        document.getElementById('aSumHigh').value = p.high || 0;
+        document.getElementById('aSumNormal').value = p.normal || 0;
+        document.getElementById('aSumLow').value = p.low || 0;
+        document.getElementById('aSumThemes').value = (d.themes || []).join('\n');
       });
     }
     function logout() { isAdmin = false; document.getElementById('adminBar').style.display = 'none'; document.getElementById('adminPanel').classList.remove('visible'); }
@@ -494,6 +593,93 @@
           </div>
           ${isAdmin ? `<button class="btn-x" onclick="deleteUpdate('${key}')" title="Delete update" style="flex-shrink:0;margin-left:8px">&times;</button>` : ''}
         </div>`).join('');
+    });
+
+    // ── ISSUE SUMMARY ──────────────────────────────────────────────────────────
+    function saveIssueSummary() {
+      const themes = document.getElementById('aSumThemes').value.split('\n').map(s=>s.trim()).filter(Boolean);
+      db.ref('issueSummary').set({
+        total: parseInt(document.getElementById('aSumTotal').value) || 0,
+        byStatus: {
+          new: parseInt(document.getElementById('aSumNew').value) || 0,
+          inProgress: parseInt(document.getElementById('aSumInProgress').value) || 0,
+          completed: parseInt(document.getElementById('aSumCompleted').value) || 0,
+          byDesign: parseInt(document.getElementById('aSumByDesign').value) || 0,
+          duplicate: parseInt(document.getElementById('aSumDuplicate').value) || 0
+        },
+        byPriority: {
+          critical: parseInt(document.getElementById('aSumCritical').value) || 0,
+          high: parseInt(document.getElementById('aSumHigh').value) || 0,
+          normal: parseInt(document.getElementById('aSumNormal').value) || 0,
+          low: parseInt(document.getElementById('aSumLow').value) || 0
+        },
+        themes,
+        updatedAt: Date.now()
+      });
+    }
+    db.ref('issueSummary').on('value', snap => {
+      const d = snap.val();
+      const section = document.getElementById('issueSummarySection');
+      const el = document.getElementById('issueSummaryContent');
+      if (!d || !d.total) { section.style.display = 'none'; return; }
+      section.style.display = 'block';
+      const s = d.byStatus || {};
+      const p = d.byPriority || {};
+      const themes = Object.values(d.themes || {});
+      el.innerHTML = `
+        <div class="summary-card">
+          <div class="summary-card-header">
+            <h3>Issue Tracker Summary</h3>
+            ${d.updatedAt ? `<span class="summary-updated">Updated ${fmt(d.updatedAt)}</span>` : ''}
+          </div>
+          <div class="summary-body">
+            <div class="summary-total-wrap">
+              <div>
+                <div class="summary-total">${d.total}</div>
+                <div class="summary-total-label">issues submitted by operators</div>
+              </div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-stat-group">
+                <h4>By Status</h4>
+                <div class="stat-chips">
+                  ${s.new ? `<span class="stat-chip chip-new"><span class="chip-count">${s.new}</span> New</span>` : ''}
+                  ${s.inProgress ? `<span class="stat-chip chip-inprogress"><span class="chip-count">${s.inProgress}</span> In Progress</span>` : ''}
+                  ${s.completed ? `<span class="stat-chip chip-completed"><span class="chip-count">${s.completed}</span> Completed</span>` : ''}
+                  ${s.byDesign ? `<span class="stat-chip chip-bydesign"><span class="chip-count">${s.byDesign}</span> By Design</span>` : ''}
+                  ${s.duplicate ? `<span class="stat-chip chip-duplicate"><span class="chip-count">${s.duplicate}</span> Duplicate</span>` : ''}
+                </div>
+              </div>
+              <div class="summary-stat-group">
+                <h4>By Priority</h4>
+                <div class="stat-chips">
+                  ${p.critical ? `<span class="stat-chip chip-critical"><span class="chip-count">${p.critical}</span> Critical</span>` : ''}
+                  ${p.high ? `<span class="stat-chip chip-high"><span class="chip-count">${p.high}</span> High</span>` : ''}
+                  ${p.normal ? `<span class="stat-chip chip-normal"><span class="chip-count">${p.normal}</span> Normal</span>` : ''}
+                  ${p.low ? `<span class="stat-chip chip-low"><span class="chip-count">${p.low}</span> Low</span>` : ''}
+                </div>
+              </div>
+            </div>
+            ${themes.length ? `
+            <div class="summary-themes">
+              <h4>Top Reported Themes</h4>
+              <ul class="theme-list">${themes.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
+            </div>` : ''}
+          </div>
+        </div>`;
+      if (isAdmin) {
+        document.getElementById('aSumTotal').value = d.total || 0;
+        document.getElementById('aSumNew').value = s.new || 0;
+        document.getElementById('aSumInProgress').value = s.inProgress || 0;
+        document.getElementById('aSumCompleted').value = s.completed || 0;
+        document.getElementById('aSumByDesign').value = s.byDesign || 0;
+        document.getElementById('aSumDuplicate').value = s.duplicate || 0;
+        document.getElementById('aSumCritical').value = p.critical || 0;
+        document.getElementById('aSumHigh').value = p.high || 0;
+        document.getElementById('aSumNormal').value = p.normal || 0;
+        document.getElementById('aSumLow').value = p.low || 0;
+        document.getElementById('aSumThemes').value = themes.join('\n');
+      }
     });
 
     // ── FEEDBACK ───────────────────────────────────────────────────────────────
