@@ -113,6 +113,7 @@
     .chip-new { background: #f0f9ff; color: #0369a1; }
     .chip-inprogress { background: #fef3c7; color: #92400e; }
     .chip-completed { background: #e6f9ee; color: #15803d; }
+    .chip-blocked { background: #fce7f3; color: #9d174d; }
     .chip-bydesign { background: #f3f4f6; color: #374151; }
     .chip-duplicate { background: #f5f3ff; color: #5b21b6; }
     .chip-critical { background: #fee2e2; color: #991b1b; }
@@ -204,7 +205,7 @@
       <div class="admin-section">
         <h3>Submitted Issues Summary</h3>
         <p style="font-size:13px;color:#6b7280;margin-bottom:12px">Update these numbers after reviewing the operator issue tracker spreadsheet. Changes go live immediately.</p>
-        <label class="fl">Total issues submitted</label>
+        <label class="fl">Total open issues (New + In Progress + Blocked)</label>
         <div class="summary-admin-grid" style="grid-template-columns:repeat(auto-fill,minmax(90px,1fr))">
           <div class="summary-admin-field"><label>Total</label><input type="number" id="aSumTotal" min="0" value="0"></div>
         </div>
@@ -213,6 +214,7 @@
           <div class="summary-admin-field"><label>New</label><input type="number" id="aSumNew" min="0" value="0"></div>
           <div class="summary-admin-field"><label>In Progress</label><input type="number" id="aSumInProgress" min="0" value="0"></div>
           <div class="summary-admin-field"><label>Completed</label><input type="number" id="aSumCompleted" min="0" value="0"></div>
+          <div class="summary-admin-field"><label>Blocked</label><input type="number" id="aSumBlocked" min="0" value="0"></div>
           <div class="summary-admin-field"><label>By Design</label><input type="number" id="aSumByDesign" min="0" value="0"></div>
           <div class="summary-admin-field"><label>Duplicate</label><input type="number" id="aSumDuplicate" min="0" value="0"></div>
         </div>
@@ -432,6 +434,7 @@
         document.getElementById('aSumNew').value = s.new || 0;
         document.getElementById('aSumInProgress').value = s.inProgress || 0;
         document.getElementById('aSumCompleted').value = s.completed || 0;
+        document.getElementById('aSumBlocked').value = s.blocked || 0;
         document.getElementById('aSumByDesign').value = s.byDesign || 0;
         document.getElementById('aSumDuplicate').value = s.duplicate || 0;
         const p = d.byPriority || {};
@@ -604,6 +607,7 @@
           new: parseInt(document.getElementById('aSumNew').value) || 0,
           inProgress: parseInt(document.getElementById('aSumInProgress').value) || 0,
           completed: parseInt(document.getElementById('aSumCompleted').value) || 0,
+          blocked: parseInt(document.getElementById('aSumBlocked').value) || 0,
           byDesign: parseInt(document.getElementById('aSumByDesign').value) || 0,
           duplicate: parseInt(document.getElementById('aSumDuplicate').value) || 0
         },
@@ -616,6 +620,7 @@
         themes,
         updatedAt: Date.now()
       });
+      db.ref('overall/updatedAt').set(Date.now());
     }
     db.ref('issueSummary').on('value', snap => {
       const d = snap.val();
@@ -636,7 +641,7 @@
             <div class="summary-total-wrap">
               <div>
                 <div class="summary-total">${d.total}</div>
-                <div class="summary-total-label">issues submitted by operators</div>
+                <div class="summary-total-label">open issues</div>
               </div>
             </div>
             <div class="summary-row">
@@ -646,6 +651,7 @@
                   ${s.new ? `<span class="stat-chip chip-new"><span class="chip-count">${s.new}</span> New</span>` : ''}
                   ${s.inProgress ? `<span class="stat-chip chip-inprogress"><span class="chip-count">${s.inProgress}</span> In Progress</span>` : ''}
                   ${s.completed ? `<span class="stat-chip chip-completed"><span class="chip-count">${s.completed}</span> Completed</span>` : ''}
+                  ${s.blocked ? `<span class="stat-chip chip-blocked"><span class="chip-count">${s.blocked}</span> Blocked</span>` : ''}
                   ${s.byDesign ? `<span class="stat-chip chip-bydesign"><span class="chip-count">${s.byDesign}</span> By Design</span>` : ''}
                   ${s.duplicate ? `<span class="stat-chip chip-duplicate"><span class="chip-count">${s.duplicate}</span> Duplicate</span>` : ''}
                 </div>
@@ -672,6 +678,7 @@
         document.getElementById('aSumNew').value = s.new || 0;
         document.getElementById('aSumInProgress').value = s.inProgress || 0;
         document.getElementById('aSumCompleted').value = s.completed || 0;
+        document.getElementById('aSumBlocked').value = s.blocked || 0;
         document.getElementById('aSumByDesign').value = s.byDesign || 0;
         document.getElementById('aSumDuplicate').value = s.duplicate || 0;
         document.getElementById('aSumCritical').value = p.critical || 0;
